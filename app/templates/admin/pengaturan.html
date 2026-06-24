@@ -1,0 +1,203 @@
+{% extends "base_admin.html" %}
+
+{% set active_page = "pengaturan" %}
+
+{% block title %}Pengaturan | Simpul Admin{% endblock %}
+{% block header_title %}Pengaturan Sistem{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl">
+    
+    <div class="mb-6">
+        <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-outline">Konfigurasi</span>
+        <h2 class="font-serif text-3xl font-bold text-on-surface mt-1">Pengaturan Profil Admin</h2>
+    </div>
+
+    <div id="apiAlert" class="hidden mb-6 p-4 rounded-xl flex items-center gap-3 text-sm border transition-all duration-500">
+        <span id="apiAlertIcon" class="material-symbols-outlined"></span>
+        <span id="apiAlertMessage" class="font-medium"></span>
+    </div>
+
+    <div class="space-y-6">
+        
+        <div class="bg-surface rounded-[24px] pillowy-shadow border border-outline-variant/20 overflow-hidden p-6 md:p-8">
+            <h3 class="font-serif text-xl font-semibold text-on-surface mb-6">Informasi Pribadi</h3>
+            
+            <form id="profileForm" enctype="multipart/form-data">
+                <div class="flex flex-col sm:flex-row gap-8 items-start mb-8">
+                    <div class="flex flex-col items-center gap-3 shrink-0 mx-auto sm:mx-0">
+                        <div class="w-24 h-24 rounded-full border-4 border-surface-container-lowest shadow-md overflow-hidden bg-primary-container relative group">
+                            <img id="avatarPreview" 
+                                 src="{{ url_for('static', filename='img/avatars/avatar_' ~ admin.id ~ '.jpg') }}" 
+                                 onerror="this.src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80'" 
+                                 alt="Admin" class="w-full h-full object-cover">
+                            <div id="uploadOverlay" class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                                <span class="material-symbols-outlined text-white">photo_camera</span>
+                            </div>
+                        </div>
+                        <input type="file" name="foto_profil" id="fotoProfilInput" accept="image/*" class="hidden">
+                        <button type="button" id="uploadBtn" class="text-xs font-semibold text-primary hover:underline">Ubah Foto</button>
+                    </div>
+
+                    <div class="flex-1 w-full space-y-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Nama Lengkap</label>
+                            <input type="text" name="nama_lengkap" id="nama_lengkap" value="{{ admin.name }}" required class="w-full bg-white border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary text-on-surface">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Email Akun</label>
+                            <input type="email" value="{{ admin.email }}" class="w-full bg-surface-container-low border border-outline-variant/50 rounded-xl px-4 py-3 text-sm text-outline cursor-not-allowed" readonly disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end pt-4 border-t border-outline-variant/20">
+                    <button type="submit" class="px-6 py-2.5 bg-primary text-white rounded-full text-sm font-medium flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">save</span> Simpan Profil
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-surface rounded-[24px] pillowy-shadow border border-outline-variant/20 overflow-hidden p-6 md:p-8">
+            <h3 class="font-serif text-xl font-semibold text-on-surface mb-6">Ubah Kata Sandi</h3>
+            
+            <form id="passwordForm" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Kata Sandi Saat Ini</label>
+                    <div class="relative w-full">
+                        <input type="password" id="password_lama" required placeholder="••••••••" class="w-full bg-white border border-outline-variant rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-primary">
+                        <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline toggle-password" data-target="password_lama">
+                            <span class="material-symbols-outlined text-[20px]">visibility</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Kata Sandi Baru</label>
+                        <div class="relative w-full">
+                            <input type="password" id="password_baru" required placeholder="••••••••" class="w-full bg-white border border-outline-variant rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-primary">
+                            <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline toggle-password" data-target="password_baru">
+                                <span class="material-symbols-outlined text-[20px]">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Konfirmasi Kata Sandi Baru</label>
+                        <div class="relative w-full">
+                            <input type="password" id="konfirmasi_password" required placeholder="••••••••" class="w-full bg-white border border-outline-variant rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:border-primary">
+                            <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline toggle-password" data-target="konfirmasi_password">
+                                <span class="material-symbols-outlined text-[20px]">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end pt-6 mt-4 border-t border-outline-variant/20">
+                    <button type="submit" class="px-6 py-2.5 bg-white border border-outline-variant text-on-surface-variant rounded-full text-sm font-medium flex items-center gap-2">
+                        Perbarui Kata Sandi
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const alertBox = document.getElementById('apiAlert');
+        const alertIcon = document.getElementById('apiAlertIcon');
+        const alertMessage = document.getElementById('apiAlertMessage');
+
+        function showAlert(message, isSuccess) {
+            alertBox.classList.remove('hidden', 'bg-primary/10', 'text-primary', 'border-primary/20', 'bg-error/10', 'text-error', 'border-error/20');
+            if(isSuccess) {
+                alertBox.classList.add('bg-primary/10', 'text-primary', 'border-primary/20');
+                alertIcon.textContent = 'check_circle';
+            } else {
+                alertBox.classList.add('bg-error/10', 'text-error', 'border-error/20');
+                alertIcon.textContent = 'error';
+            }
+            alertMessage.textContent = message;
+            
+            setTimeout(() => {
+                alertBox.style.opacity = '0';
+                setTimeout(() => { alertBox.classList.add('hidden'); alertBox.style.opacity = '1'; }, 500);
+            }, 4000);
+        }
+
+        // --- FIX CACHE BUSTER FOTO ---
+        const avatarPreview = document.getElementById('avatarPreview');
+        const timestamp = new Date().getTime();
+        if (avatarPreview && !avatarPreview.src.includes('unsplash.com')) {
+            avatarPreview.src = avatarPreview.src + '?t=' + timestamp;
+        }
+
+        // --- POIN 1: AJAX PUT UPDATE PROFIL ---
+        const profileForm = document.getElementById('profileForm');
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(profileForm);
+            
+            const token = localStorage.getItem('simpul_admin_token');
+            const response = await fetch('/api/admin/profile', { method: 'PUT', headers: {'Authorization': 'Bearer ' + token},body: formData });
+            const result = await response.json();
+
+            if(response.status === 200) {
+                showAlert(result.message, true);
+                setTimeout(() => { location.reload(); }, 1000);
+            } else {
+                showAlert(result.message, false);
+            }
+        });
+
+        // --- POIN 1: AJAX PATCH UBAH PASSWORD ---
+        const passwordForm = document.getElementById('passwordForm');
+        passwordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password_lama = document.getElementById('password_lama').value;
+            const password_baru = document.getElementById('password_baru').value;
+            const konfirmasi_password = document.getElementById('konfirmasi_password').value;
+
+            const token = localStorage.getItem('simpul_admin_token');
+            const response = await fetch('/api/admin/password', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json','Authorization': 'Bearer ' + token},
+                body: JSON.stringify({ password_lama, password_baru, konfirmasi_password })
+            });
+            const result = await response.json();
+
+            if(response.status === 200) {
+                showAlert(result.message, true);
+                passwordForm.reset();
+            } else {
+                showAlert(result.message, false);
+            }
+        });
+
+        // Trigger Input File
+        const fileInput = document.getElementById('fotoProfilInput');
+        document.getElementById('uploadOverlay').addEventListener('click', () => fileInput.click());
+        document.getElementById('uploadBtn').addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => { avatarPreview.src = e.target.result; }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        // Toggle Password Visibility
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = document.getElementById(this.getAttribute('data-target'));
+                const icon = this.querySelector('.material-symbols-outlined');
+                const isPass = input.type === 'password';
+                input.type = isPass ? 'text' : 'password';
+                icon.textContent = isPass ? 'visibility_off' : 'visibility';
+            });
+        });
+    });
+</script>
+{% endblock %}

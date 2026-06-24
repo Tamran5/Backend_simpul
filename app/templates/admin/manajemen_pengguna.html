@@ -1,0 +1,222 @@
+{% extends "base_admin.html" %}
+
+{% set active_page = "pengguna" %}
+
+{% block title %}Manajemen Pengguna | Simpul Admin{% endblock %}
+{% block header_title %}Manajemen Pengguna{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
+    <div>
+        <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-outline">Direktori Klien</span>
+        <h2 class="font-serif text-3xl font-bold text-on-surface mt-1">Kelola Pengguna Terdaftar</h2>
+    </div>
+    
+    <div class="flex items-center gap-3 relative">
+        <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari nama atau email..." class="w-full sm:w-64 pl-10 pr-4 py-2 bg-white border border-outline-variant rounded-full text-sm focus:outline-none focus:border-primary">
+        </div>
+        
+        <button id="filterBtn" class="px-4 py-2 bg-white border border-outline-variant rounded-full text-sm font-medium text-on-surface-variant hover:bg-surface-container-low transition-colors flex items-center gap-2 focus:outline-none">
+            <span class="material-symbols-outlined text-[18px]">filter_list</span>
+            <span class="text-xs hidden sm:inline">Filter Status</span>
+        </button>
+
+        <div id="filterDropdown" class="hidden absolute right-0 top-12 w-52 bg-white rounded-2xl border border-outline-variant/30 py-2 z-50 pillowy-shadow animate-fade-in">
+            <div class="px-4 py-1.5 border-b border-outline-variant/10 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-outline">Tampilkan Data</span>
+            </div>
+            <button onclick="filterStatus('all')" class="w-full text-left px-4 py-2 text-xs font-medium text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-outline-variant"></span> Semua Klien
+            </button>
+            <button onclick="filterStatus('verified')" class="w-full text-left px-4 py-2 text-xs font-medium text-primary hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-primary"></span> Terverifikasi (Aktif)
+            </button>
+            <button onclick="filterStatus('unverified')" class="w-full text-left px-4 py-2 text-xs font-medium text-on-surface-variant hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-outline"></span> Belum Verifikasi
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="bg-surface p-5 rounded-[20px] border border-outline-variant/30 pillowy-shadow">
+        <p class="text-xs text-on-surface-variant mb-1 font-medium">Total Pengguna</p>
+        <h3 class="text-3xl font-serif text-on-surface">{{ total_users }}</h3>
+    </div>
+    <div class="bg-surface p-5 rounded-[20px] border border-outline-variant/30 pillowy-shadow">
+        <p class="text-xs text-primary mb-1 font-semibold">Terverifikasi</p>
+        <h3 class="text-3xl font-serif text-primary">{{ verified_users }}</h3>
+    </div>
+    <div class="bg-surface p-5 rounded-[20px] border border-outline-variant/30 pillowy-shadow">
+        <p class="text-xs text-outline mb-1 font-medium">Belum Verifikasi</p>
+        <h3 class="text-3xl font-serif text-on-surface-variant">{{ unverified_users }}</h3>
+    </div>
+    <div class="bg-surface p-5 rounded-[20px] border border-outline-variant/30 pillowy-shadow">
+        <p class="text-xs text-on-surface-variant mb-1 font-medium">Pengguna Baru</p>
+        <h3 class="text-3xl font-serif text-on-surface">{{ new_users }}</h3>
+    </div>
+</div>
+
+<div class="bg-surface rounded-[24px] pillowy-shadow border border-outline-variant/20 overflow-hidden mt-6">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left whitespace-nowrap" id="userTable">
+            <thead>
+                <tr class="border-b border-outline-variant/30 bg-surface-container-lowest">
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Nama Klien</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Email Akun</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Karakteristik</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Status Akun</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider text-right">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant/20 bg-white">
+                
+                {% for user in users %}
+                <tr class="hover:bg-surface-container-low/50 transition-colors user-row" data-status="{% if user.is_verified %}verified{% else %}unverified{% endif %}">
+                    <td class="px-6 py-5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs">
+                                {{ user.name[:2]|upper }}
+                            </div>
+                            <p class="text-sm font-medium text-on-surface name-cell">{{ user.name }}</p>
+                        </div>
+                    </td>
+                    <td class="px-6 py-5 text-sm text-on-surface-variant email-cell">{{ user.email }}</td>
+                    <td class="px-6 py-5 text-xs text-on-surface-variant">{{ user.gender }} • {{ user.religion }}</td>
+                    <td class="px-6 py-5">
+                        {% if user.is_verified %}
+                        <span class="flex items-center gap-1.5 text-xs font-medium text-primary">
+                            <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Terverifikasi (Aktif)
+                        </span>
+                        {% else %}
+                        <span class="flex items-center gap-1.5 text-xs font-medium text-outline">
+                            <span class="w-2 h-2 rounded-full bg-outline"></span> Belum Verifikasi
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-5 text-right">
+                        <button onclick="openDeleteModal('{{ user.id }}')" class="text-outline hover:text-error p-1 transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                        </button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="px-6 py-10 text-center text-sm text-on-surface-variant">Belum ada pengguna terdaftar di database MySQL.</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="deleteModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center px-4">
+    <div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+    <div class="bg-white w-full max-w-sm rounded-[24px] pillowy-shadow relative z-10 p-6 text-center animate-fade-in">
+        <div class="w-12 h-12 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto mb-3">
+            <span class="material-symbols-outlined text-[24px]">delete</span>
+        </div>
+        <h3 class="font-serif text-lg font-bold text-on-surface mb-1">Hapus Data Klien?</h3>
+        <p class="text-xs text-on-surface-variant mb-6">Tindakan ini permanen dan menghapus seluruh data pendaftaran mereka dari database.</p>
+        <div class="flex gap-3 justify-center">
+            <button onclick="closeDeleteModal()" class="px-4 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:bg-surface-container-low w-full">Batal</button>
+            <button id="confirmDeleteBtn" class="px-4 py-2 bg-error text-white rounded-full text-sm font-medium w-full">Hapus Tetap</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let userIdToDelete = null;
+
+    // --- INTERAKSI DROPDOWN FILTER STATUS ---
+    const filterBtn = document.getElementById('filterBtn');
+    const filterDropdown = document.getElementById('filterDropdown');
+
+    if (filterBtn && filterDropdown) {
+        filterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterDropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!filterDropdown.contains(e.target) && e.target !== filterBtn) {
+                filterDropdown.classList.add('hidden');
+            }
+        });
+    }
+
+    // --- FUNGSI LIVE SEARCH AKURAT ---
+    function searchTable() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('.user-row');
+        
+        rows.forEach(row => {
+            const name = row.querySelector('.name-cell').textContent.toLowerCase();
+            const email = row.querySelector('.email-cell').textContent.toLowerCase();
+            if (name.includes(input) || email.includes(input)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    // --- FUNGSI FILTER BERDASARKAN STATUS VERIFIKASI ---
+    function filterStatus(status) {
+        const rows = document.querySelectorAll('.user-row');
+        rows.forEach(row => {
+            if (status === 'all' || row.getAttribute('data-status') === status) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+        filterDropdown.classList.add('hidden');
+    }
+
+    // --- AJAX DELETE KE API FLASK RESTRUCTURING ---
+    function openDeleteModal(id) {
+        userIdToDelete = id;
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        userIdToDelete = null;
+    }
+
+    // Eksekusi Hapus Menggunakan Fetch API JWT Berdasarkan Poin 3 Rubrik
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+        if (!userIdToDelete) return;
+
+        try {
+            // Mengambil token JWT admin dari localStorage web dashboard kamu
+            const token = localStorage.getItem('simpul_jwt_token');
+
+            const response = await fetch(`/api/admin/users/${userIdToDelete}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                // Sukses terhapus di database, langsung reload halaman agar data sinkron terbaru
+                window.location.reload();
+            } else {
+                alert("Gagal menghapus data. Anda mungkin tidak memiliki hak akses admin.");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Terjadi kesalahan koneksi ke server.");
+        } finally {
+            closeDeleteModal();
+        }
+    });
+</script>
+{% endblock %}

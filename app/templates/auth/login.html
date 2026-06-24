@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Admin Login | Simpul</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fbf9f7;
+            overflow-x: hidden;
+        }
+        .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+        .organic-shape-1 {
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        }
+        .organic-shape-2 {
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        }
+        .editorial-input {
+            border: none;
+            border-bottom: 1px solid #c2c8c4;
+            border-radius: 0;
+            padding-left: 0;
+            padding-right: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .editorial-input:focus {
+            border-bottom-color: #4e635a;
+            box-shadow: none;
+        }
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+        .animate-float {
+            animation: subtle-float 15s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+            animation: subtle-float 18s ease-in-out infinite reverse;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#4e635a",
+                        "primary-container": "#8da399",
+                        "on-surface": "#1b1c1b",
+                        "on-surface-variant": "#424845",
+                        "outline-variant": "#c2c8c4",
+                        "surface": "#fbf9f7",
+                        "background": "#fbf9f7"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "gutter": "24px",
+                        "lg": "48px",
+                        "xl": "80px"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface min-h-screen selection:bg-primary-container/30">
+    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[10%] -left-[5%] w-[60vw] h-[60vw] bg-primary-container/5 organic-shape-1 animate-float blur-3xl"></div>
+        <div class="absolute top-[20%] -right-[10%] w-[50vw] h-[50vw] bg-primary-container/10 organic-shape-2 animate-float-delayed blur-3xl"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-[40vw] h-[40vw] bg-primary-container/5 organic-shape-1 animate-float blur-3xl" style="animation-delay: -5s"></div>
+    </div>
+
+    <header class="relative z-50 w-full">
+        <div class="flex justify-between items-center px-lg py-md max-w-[1440px] mx-auto">
+            <div class="flex items-center gap-sm">
+                <span class="material-symbols-outlined text-primary text-[28px]">all_inclusive</span>
+                <span class="text-h3 font-semibold tracking-tight text-primary">Simpul</span>
+            </div>
+            <a class="text-[12px] uppercase tracking-[0.2em] font-medium text-on-surface-variant hover:text-primary transition-colors" href="#">Support</a>
+        </div>
+    </header>
+
+    <main class="relative z-10 min-h-[calc(100vh-160px)] flex items-center">
+        <div class="max-w-[1440px] mx-auto px-lg w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-xl items-center">
+                
+                <div class="lg:col-span-6 xl:col-span-7 pr-xl hidden lg:block">
+                    <span class="text-primary font-medium tracking-[0.3em] uppercase text-[11px] mb-md block">SISTEM INTERNAL</span>
+                    <h2 class="serif-heading leading-[1.1] text-on-surface mb-lg text-[52px]">Seni manajemen yang <span class="italic text-primary-container">selaras</span>.</h2>
+                    <div class="w-24 h-px bg-primary/20 mb-lg"></div>
+                    <p class="max-w-md text-on-surface-variant leading-relaxed text-base">Akses suite administratif Simpul. Dirancang untuk presisi, dibuat untuk kurator modern.</p>
+                </div>
+
+                <div class="lg:col-span-6 xl:col-span-5 flex justify-center lg:justify-end">
+                    <div class="w-full bg-white/40 backdrop-blur-sm border border-white/60 rounded-[2px] shadow-[0_32px_64px_-12px_rgba(78,99,90,0.08)] max-w-[420px] p-md lg:p-lg">
+                        <div class="mb-xl lg:hidden">
+                            <h2 class="serif-heading text-4xl text-on-surface">Admin Portal</h2>
+                        </div>
+                        <div class="hidden lg:block mb-xl">
+                            <h3 class="text-[13px] uppercase tracking-[0.15em] font-semibold text-on-surface-variant mb-2">AUTENTIKASI</h3>
+                            <p class="text-sm text-on-surface-variant/70">Silakan masuk untuk melanjutkan</p>
+                        </div>
+
+                        <form class="space-y-lg" id="loginForm">
+                            <div class="relative group">
+                                <label class="text-[11px] uppercase tracking-[0.1em] font-bold text-on-surface-variant/60 block mb-2 transition-all group-focus-within:text-primary" for="email">EMAIL ADMIN</label>
+                                <input class="editorial-input w-full bg-transparent focus:outline-none text-base" id="email" placeholder="name@simpul.com" required="" type="email">
+                            </div>
+                            
+                            <div class="relative group">
+                                <div class="flex justify-between items-end mb-2">
+                                    <label class="text-[11px] uppercase tracking-[0.1em] font-bold text-on-surface-variant/60 block transition-all group-focus-within:text-primary" for="password">KATA SANDI</label>
+                                    <a class="text-[11px] uppercase tracking-[0.05em] font-medium text-primary-container hover:text-primary transition-all" href="#">LUPA?</a>
+                                </div>
+                                <input class="editorial-input w-full bg-transparent focus:outline-none text-base pr-8" id="password" placeholder="••••••••" required="" type="password">
+                                <div class="absolute right-0 bottom-3 text-outline/40" id="togglePassword">
+                                    <span class="material-symbols-outlined text-[18px] cursor-pointer hover:text-primary transition-colors" id="visibilityIcon">visibility</span>
+                                </div>
+                            </div>
+
+                            <p id="errorMessage" class="text-red-500 text-xs hidden font-medium mt-2"></p>
+
+                            <div class="pt-md">
+                                <button class="group w-full bg-primary text-white rounded-[1px] font-medium text-sm uppercase tracking-[0.2em] hover:bg-on-surface transition-all duration-500 flex items-center justify-center gap-md py-md" type="submit" id="submitBtn">
+                                    <span class="btn-text">MASUK PORTAL</span>
+                                    <span class="material-symbols-outlined transition-transform group-hover:translate-x-1 icon-arrow">arrow_right_alt</span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="pt-lg border-t border-outline-variant/30 flex justify-center mt-lg">
+                            <a class="group inline-flex items-center gap-xs text-[11px] uppercase tracking-[0.1em] font-semibold text-on-surface-variant hover:text-primary transition-colors" href="/">
+                                <span class="material-symbols-outlined text-[16px] transition-transform group-hover:-translate-x-1">west</span> Kembali ke Situs Utama
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="relative z-50 w-full py-lg border-t border-outline-variant/20">
+        <div class="max-w-[1440px] mx-auto px-lg flex flex-col md:flex-row justify-between items-center gap-md">
+            <p class="text-[11px] font-medium text-on-surface-variant/50">© 2026 SIMPUL. ALL RIGHTS RESERVED.</p>
+            <div class="flex gap-lg">
+                <a class="text-[10px] uppercase tracking-[0.1em] font-bold text-on-surface-variant hover:text-primary transition-all" href="#">PRIVASI</a>
+                <a class="text-[10px] uppercase tracking-[0.1em] font-bold text-on-surface-variant hover:text-primary transition-all" href="#">SYARAT</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const loginButton = document.getElementById('submitBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Fitur Toggle Visibility Password
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const visibilityIcon = document.getElementById('visibilityIcon');
+
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                visibilityIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+            });
+
+            // Integrasi Fetch API ke Flask Backend
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Ambil nilai input
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                // Reset error message & set loading state
+                errorMessage.classList.add('hidden');
+                const originalContent = loginButton.innerHTML;
+                loginButton.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> <span class="ml-2 btn-text">Memverifikasi...</span>`;
+                loginButton.disabled = true;
+                loginButton.classList.add('opacity-80', 'cursor-not-allowed');
+
+                try {
+                    // Tembak RESTful API Flask (Port 5000)
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email: email, password: password })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Jika Status 200 OK
+                        loginButton.innerHTML = `<span class="material-symbols-outlined">verified_user</span> <span class="ml-2 btn-text">Akses Diberikan</span>`;
+                        loginButton.classList.remove('bg-primary');
+                        loginButton.classList.add('bg-primary-container');
+
+                        // Simpan Token JWT ke LocalStorage
+                        localStorage.setItem('simpul_jwt_token', data.access_token);
+
+                        // Redirect ke halaman dashboard (sesuaikan dengan nama rute web admin kamu)
+                        setTimeout(() => {
+                            window.location.href = '/dashboard'; 
+                        }, 1200);
+
+                    } else {
+                        // Jika Gagal (misal 401 Unauthorized)
+                        loginButton.innerHTML = originalContent;
+                        loginButton.disabled = false;
+                        loginButton.classList.remove('opacity-80', 'cursor-not-allowed');
+                        
+                        errorMessage.textContent = data.message || "Email atau kata sandi tidak valid.";
+                        errorMessage.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    // Jika Server Down / Tidak Nyala
+                    loginButton.innerHTML = originalContent;
+                    loginButton.disabled = false;
+                    loginButton.classList.remove('opacity-80', 'cursor-not-allowed');
+                    
+                    errorMessage.textContent = "Gagal terhubung ke server. Pastikan Flask API sedang berjalan.";
+                    errorMessage.classList.remove('hidden');
+                }
+            });
+
+            // Smooth parallax effect for floating shapes
+            document.addEventListener('mousemove', (e) => {
+                const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+                const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+                const shapes = document.querySelectorAll('.organic-shape-1, .organic-shape-2');
+                shapes.forEach(shape => {
+                    shape.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+{% extends "base_admin.html" %}
+
+{% set active_page = "vendor" %}
+
+{% block title %}Katalog Vendor | Simpul Admin{% endblock %}
+{% block header_title %}Katalog Vendor{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
+    <div>
+        <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-outline">Direktori Vendor</span>
+        <h2 class="font-serif text-3xl font-bold text-on-surface mt-1">Kelola Mitra Terdaftar</h2>
+    </div>
+    <div class="flex items-center gap-3">
+        <button class="px-4 py-2 bg-white border border-outline-variant rounded-full text-sm font-medium text-on-surface-variant hover:bg-surface-container-low transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">filter_list</span> Filter
+        </button>
+        <button onclick="openModal('addModal')" class="px-5 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 active:scale-95 transition-all flex items-center gap-2 shadow-md shadow-primary/20">
+            <span class="material-symbols-outlined text-[18px]">add</span> Tambah Vendor
+        </button>
+    </div>
+</div>
+
+<div class="bg-surface rounded-[24px] pillowy-shadow border border-outline-variant/20 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse whitespace-nowrap">
+            <thead>
+                <tr class="border-b border-outline-variant/30">
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Nama Vendor</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Kategori</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Lokasi</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Rating</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Harga Mulai</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider text-right">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant/20">
+                <tr class="hover:bg-surface-container-low/50 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-primary font-semibold">G</div>
+                            <div>
+                                <p class="text-sm font-medium text-on-surface">Grand Asteria Ballroom</p>
+                                <p class="text-[13px] text-on-surface-variant">Premium Venue</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 bg-secondary-container/60 text-primary text-[10px] font-bold uppercase tracking-wider rounded-full">Venue</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-on-surface-variant">Jakarta Pusat</td>
+                    <td class="px-6 py-4 text-sm text-on-surface font-medium flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px] text-outline">star</span> 4.9
+                    </td>
+                    <td class="px-6 py-4 text-sm text-on-surface-variant font-medium">Rp 25.000.000</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="openModal('editModal')" class="text-outline hover:text-primary p-1 transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                        <button onclick="confirmDelete()" class="text-outline hover:text-error p-1 ml-1 transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+    }
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+    function confirmDelete() {
+        if(confirm("Apakah Anda yakin ingin menghapus data vendor ini?")) {
+            alert("Data vendor berhasil dihapus.");
+        }
+    }
+</script>
+{% endblock %}

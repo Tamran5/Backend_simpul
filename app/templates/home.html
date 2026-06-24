@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Simpul | Langkah Tenang Menuju Hari Bahagiamu</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#474836",
+                        "secondary-fixed": "#e4e4cc",
+                        "secondary-container": "#e1e1c9",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#4e635a",
+                        "primary": "#4e635a",
+                        "secondary-fixed-dim": "#c8c8b0",
+                        "outline": "#727875",
+                        "on-tertiary-fixed-variant": "#424938",
+                        "on-secondary-container": "#636451",
+                        "inverse-surface": "#303130",
+                        "tertiary-container": "#9aa18c",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1b1c1b",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dbdad8",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#263932",
+                        "surface-variant": "#e4e2e0",
+                        "on-tertiary-fixed": "#171e10",
+                        "inverse-primary": "#b5ccc1",
+                        "outline-variant": "#c2c8c4",
+                        "secondary": "#5e604d",
+                        "surface-container-highest": "#e4e2e0",
+                        "surface-container": "#efeeec",
+                        "primary-fixed": "#d1e8dd",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f5f3f1",
+                        "tertiary-fixed-dim": "#c2c9b3",
+                        "primary-container": "#8da399",
+                        "tertiary-fixed": "#dee5cf",
+                        "primary-fixed-dim": "#b5ccc1",
+                        "on-tertiary-container": "#313828",
+                        "inverse-on-surface": "#f2f0ef",
+                        "tertiary": "#5a614f",
+                        "on-secondary-fixed": "#1b1d0e",
+                        "background": "#fbf9f7",
+                        "surface-container-high": "#e9e8e6",
+                        "on-primary-fixed-variant": "#374b43",
+                        "on-primary-fixed": "#0b1f18",
+                        "on-surface-variant": "#424845",
+                        "on-background": "#1b1c1b",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#fbf9f7",
+                        "surface": "#fbf9f7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "lg": "48px",
+                        "gutter": "24px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "xl": "80px",
+                        "container-margin": "32px"
+                    },
+                    "fontFamily": {
+                        "serif": ["Playfair Display", "serif"],
+                        "h2": ["Inter"],
+                        "caption": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h3": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h2": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "caption": ["13px", {"lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "h1": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                        "h3": ["24px", {"lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .organic-shape {
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        }
+        .pillowy-shadow {
+            box-shadow: 0px 4px 20px rgba(78, 99, 90, 0.08);
+        }
+        .pillowy-shadow-hover:hover {
+            box-shadow: 0px 10px 30px rgba(78, 99, 90, 0.12);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+
+    <nav class="bg-background/90 backdrop-blur-sm shadow-[0px_4px_20px_rgba(78,99,90,0.08)] docked full-width top-0 sticky z-50">
+        <div class="flex justify-between items-center px-container-margin py-md w-full max-w-7xl mx-auto">
+            <a class="font-h3 text-h3 font-semibold tracking-tight text-primary" href="#">Simpul</a>
+            <div class="hidden md:flex items-center space-x-lg">
+                <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#features">Features</a>
+                <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#benefits">Benefits</a>
+                <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#download">Download</a>
+            </div>
+            <div class="flex items-center gap-md">
+                <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="/login">Portal Admin</a>
+                <button class="bg-primary text-on-primary px-md py-sm rounded-lg font-label-caps text-label-caps hover:opacity-80 transition-opacity active:scale-95 duration-200">Mulai Sekarang</button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="relative min-vh-90 pt-xl pb-xl px-container-margin max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-lg items-center">
+                <div class="md:col-span-6 z-10 text-left">
+                    <h1 class="font-serif italic text-[44px] sm:text-[56px] leading-tight text-on-surface mb-md">
+                        Ikat janji suci, tanpa <span class="text-primary block not-italic font-semibold">rasa cemas di hati.</span>
+                    </h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant mb-lg max-w-md">
+                        Nikmati pengalaman menyusun rencana pernikahan yang tenang dan terstruktur. Menyatukan setiap detail ke dalam satu ikatan kolaboratif yang indah.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-md">
+                        <a href="#download" class="bg-primary text-on-primary px-lg py-md rounded-xl font-h3 text-h3 hover:opacity-90 transition-all pillowy-shadow active:scale-95">
+                            Mulai Sekarang
+                        </a>
+                        <a class="flex items-center gap-xs text-primary font-h3 text-h3 group" href="#">
+                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">play_circle</span>
+                            Tonton Video
+                        </a>
+                    </div>
+                </div>
+                <div class="md:col-span-6 relative">
+                    <div class="absolute -top-12 -right-12 w-64 h-64 bg-primary-fixed organic-shape opacity-40 -z-10 animate-pulse"></div>
+                    <div class="rounded-[40px] overflow-hidden pillowy-shadow rotate-2 hover:rotate-0 transition-transform duration-700">
+                        <img class="w-full h-[600px] object-cover" src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=687&auto=format&fit=crop&w=800&q=80"/>
+                    </div>
+                    <div class="absolute -bottom-8 -left-8 bg-surface-container-lowest p-md rounded-2xl pillowy-shadow flex items-center gap-sm">
+                        <div class="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center text-on-primary-container">
+                            <span class="material-symbols-outlined">check_circle</span>
+                        </div>
+                        <div class="text-left">
+                          <p class="font-label-caps text-label-caps text-primary">Status</p>
+                          <p class="font-body-md font-bold text-on-surface">Detail Terorganisir</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-xl bg-surface-container-low text-left" id="benefits">
+            <div class="w-full px-container-margin max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row items-end justify-between mb-xl gap-md">
+                    <div class="max-w-2xl">
+                        <span class="text-primary font-label-caps text-label-caps tracking-widest uppercase">Langkah Simpul</span>
+                        <h2 class="font-serif italic text-[48px] text-on-surface mt-sm">Semua detail, jadi lebih mudah.</h2>
+                    </div>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-sm mb-base">
+                        Kami mengurai rumitnya logistik pernikahan agar Anda bisa fokus menikmati setiap momen berharga menuju hari bahagia.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+                    <div class="group">
+                        <div class="mb-md text-primary bg-primary-fixed w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <span class="material-symbols-outlined text-[32px]">checklist</span>
+                        </div>
+                        <h3 class="font-h3 text-h3 text-on-surface mb-sm">Checklist Bersama</h3>
+                        <p class="font-body-md text-on-surface-variant leading-relaxed">
+                            Dokumen dinamis yang dibagikan langsung dengan pasangan atau keluarga. Bagi tugas, atur tenggat waktu, dan pantau progresnya secara real-time.
+                        </p>
+                    </div>
+                    <div class="group">
+                        <div class="mb-md text-primary bg-primary-fixed w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <span class="material-symbols-outlined text-[32px]">account_tree</span>
+                        </div>
+                        <h3 class="font-h3 text-h3 text-on-surface mb-sm">Alur Birokrasi & Adat</h3>
+                        <p class="font-body-md text-on-surface-variant leading-relaxed">
+                            Panduan lengkap untuk upacara keagamaan dan pendaftaran KUA. Pastikan setiap tradisi berjalan khidmat tanpa ada berkas yang terlewat.
+                        </p>
+                    </div>
+                    <div class="group">
+                        <div class="mb-md text-primary bg-primary-fixed w-16 h-16 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <span class="material-symbols-outlined text-[32px]">storefront</span>
+                        </div>
+                        <h3 class="font-h3 text-h3 text-on-surface mb-sm">Katalog Vendor</h3>
+                        <p class="font-body-md text-on-surface-variant leading-relaxed">
+                            Jaringan vendor terkurasi yang memahami kebutuhan estetika Anda. Komunikasi dan manajemen kesepakatan menjadi lebih praktis di satu tempat.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-xl overflow-hidden text-left" id="features">
+            <div class="max-w-7xl mx-auto px-container-margin">
+                <div class="relative bg-white rounded-[48px] p-lg md:p-xl pillowy-shadow flex flex-col md:flex-row items-center gap-xl overflow-hidden">
+                    <div class="absolute -right-20 -top-20 w-80 h-80 bg-tertiary-fixed-dim organic-shape opacity-20 -z-0"></div>
+                    <div class="absolute left-1/4 bottom-0 w-96 h-96 bg-primary-fixed organic-shape opacity-10 -z-0"></div>
+                    <div class="w-full md:w-1/2 relative z-10">
+                        <div class="inline-block px-md py-sm bg-primary-container/20 text-primary border border-primary/20 rounded-full mb-md font-label-caps text-label-caps">
+                            Aplikasi Mobile
+                        </div>
+                        <h2 class="font-h1 text-h1 text-on-surface mb-lg">Seluruh rencana pernikahan, kini dalam genggaman</h2>
+                        <div class="space-y-lg">
+                            <div class="flex gap-md">
+                                <div class="shrink-0 w-10 h-10 border-2 border-primary rounded-full flex items-center justify-center text-primary font-bold">1</div>
+                                <div>
+                                    <h4 class="font-h3 text-h3 text-on-surface mb-xs">Sinkronisasi Otomatis</h4>
+                                    <p class="font-body-md text-on-surface-variant">Ubah daftar tamu dari laptop, dan lihat hasilnya langsung di ponsel saat Anda sedang rapat bersama katering.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-md">
+                                <div class="shrink-0 w-10 h-10 border-2 border-primary rounded-full flex items-center justify-center text-primary font-bold">2</div>
+                                <div>
+                                    <h4 class="font-h3 text-h3 text-on-surface mb-xs">Sesuai Tradisi Kuliner & Budaya</h4>
+                                    <p class="font-body-md text-on-surface-variant">Daftar kebutuhan spesifik untuk rangkaian pernikahan multi-hari, upacara adat, hingga perayaan lintas budaya.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2 flex justify-center relative z-10">
+                        <div class="relative w-72 md:w-80 group">
+                            <div class="absolute inset-0 bg-primary opacity-20 blur-3xl rounded-full scale-125 transition-transform group-hover:scale-150 duration-700"></div>
+                            <img class="relative rounded-[3rem] border-[10px] border-on-surface pillowy-shadow transition-transform duration-500 hover:-translate-y-4" src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-xl text-left">
+            <div class="w-full px-container-margin max-w-7xl mx-auto">
+                <div class="text-center mb-xl">
+                    <span class="text-primary font-label-caps text-label-caps tracking-widest uppercase">Kisah Bahagia</span>
+                    <h2 class="font-serif italic text-[48px] text-on-surface mt-sm">Cerita Mereka</h2>
+                </div>
+                <div class="columns-1 md:columns-3 gap-lg space-y-lg">
+                    <div class="break-inside-avoid bg-white p-md rounded-2xl pillowy-shadow pillowy-shadow-hover transition-all">
+                        <span class="material-symbols-outlined text-primary-container text-4xl mb-sm" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+                        <p class="font-serif italic text-h3 text-on-surface mb-lg">
+                            "Simpul tidak hanya membantu kami merencanakan pernikahan, tapi juga menjaga ketenangan pikiran kami di tengah masa-masa yang sibuk."
+                        </p>
+                        <div class="flex items-center gap-sm">
+                            <div class="w-12 h-12 rounded-full bg-surface-container-high overflow-hidden">
+                                <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80"/>
+                            </div>
+                            <div>
+                                <p class="font-body-md font-bold text-on-surface">Dinda & Rama</p>
+                                <p class="font-caption text-caption text-on-surface-variant">Jakarta, Juni 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="break-inside-avoid bg-surface-container-lowest p-md rounded-2xl border border-outline-variant pillowy-shadow-hover transition-all">
+                        <span class="material-symbols-outlined text-primary-container text-4xl mb-sm" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+                        <p class="font-serif italic text-h3 text-on-surface mb-lg">
+                            "Panduan birokrasi dan adatnya benar-benar penyelamat. Kami mengadakan perayaan tiga hari dan setiap detail tradisi tercatat dengan sempurna."
+                        </p>
+                        <div class="flex items-center gap-sm">
+                            <div class="w-12 h-12 rounded-full bg-surface-container-high overflow-hidden">
+                                <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80"/>
+                            </div>
+                            <div>
+                                <p class="font-body-md font-bold text-on-surface">Rian & Amalia</p>
+                                <p class="font-caption text-caption text-on-surface-variant">Yogyakarta, Agustus 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="break-inside-avoid bg-primary text-on-primary p-md rounded-2xl pillowy-shadow pillowy-shadow-hover transition-all">
+                        <span class="material-symbols-outlined text-primary-container text-4xl mb-sm" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+                        <p class="font-serif italic text-h3 mb-lg leading-relaxed">
+                            "Checklist bersamanya menyelamatkan hubungan kami! Tidak ada lagi drama saling ngomel—hanya target bersama yang jelas dan progres yang menyenangkan."
+                        </p>
+                        <div class="flex items-center gap-sm">
+                            <div class="w-12 h-12 rounded-full bg-white/20 overflow-hidden">
+                                <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"/>
+                            </div>
+                            <div>
+                                <p class="font-body-md font-bold">Fanny & Reza</p>
+                                <p class="font-caption text-caption text-on-primary/80">Bandung, Oktober 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-xl px-container-margin" id="download">
+            <div class="max-w-7xl mx-auto relative rounded-[60px] overflow-hidden min-h-[600px] flex items-center">
+                <img class="absolute inset-0 w-full h-full object-cover" src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=1200&q=80"/>
+                <div class="absolute inset-0 bg-on-surface/40 backdrop-blur-[2px]"></div>
+                <div class="relative z-10 w-full p-lg md:p-xl text-center md:text-left grid grid-cols-1 md:grid-cols-2 gap-lg items-center">
+                    <div>
+                        <h2 class="font-serif italic text-[44px] md:text-[56px] text-white leading-tight mb-md">Mulai Kisah Bahagiamu Hari Ini</h2>
+                        <p class="font-body-lg text-body-lg text-white/90 mb-lg max-w-md">
+                            Bergabunglah dengan ribuan pasangan yang memilih ketenangan ketimbang stres. Unduh Simpul dan nikmati perjalanan menyenangkan menuju hari bahagiamu.
+                        </p>
+                        <div class="flex flex-wrap gap-md justify-center md:justify-start">
+                            <a class="bg-white text-primary px-lg py-md rounded-xl font-h3 text-h3 pillowy-shadow hover:scale-105 transition-transform flex items-center gap-sm" href="#">
+                                <span class="material-symbols-outlined">phone_iphone</span>
+                                App Store
+                            </a>
+                            <a class="bg-white text-primary px-lg py-md rounded-xl font-h3 text-h3 pillowy-shadow hover:scale-105 transition-transform flex items-center gap-sm" href="#">
+                                <span class="material-symbols-outlined">play_arrow</span>
+                                Google Play
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center md:items-end">
+                        <div class="bg-white p-lg rounded-[32px] pillowy-shadow max-w-[240px]">
+                            <div class="w-40 h-40 bg-surface-container-high rounded-xl flex items-center justify-center border-4 border-primary">
+                                <div class="grid grid-cols-5 gap-1 opacity-60">
+                                    <div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-transparent"></div><div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-primary"></div>
+                                    <div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-transparent"></div><div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-transparent"></div><div class="w-6 h-6 bg-primary"></div>
+                                    <div class="w-6 h-6 bg-transparent"></div><div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-transparent"></div>
+                                    <div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-transparent"></div><div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-transparent"></div><div class="w-6 h-6 bg-primary"></div>
+                                    <div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-transparent"></div><div class="w-6 h-6 bg-primary"></div><div class="w-6 h-6 bg-primary"></div>
+                                </div>
+                            </div>
+                            <p class="font-label-caps text-label-caps text-primary text-center mt-md">Scan untuk Mengunduh</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-surface-container-low text-left">
+        <div class="w-full px-container-margin py-xl flex flex-col md:flex-row justify-between gap-lg max-w-7xl mx-auto">
+            <div class="max-w-sm">
+                <div class="font-h3 text-h3 font-semibold text-primary mb-4">Simpul</div>
+                <p class="font-body-md text-body-md text-on-surface-variant">© 2026 Simpul. Langkah tenang menuju hari bahagia.</p>
+                <div class="mt-lg flex gap-md">
+                    <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+                    <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">favorite</span></a>
+                    <a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">alternate_email</span></a>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-lg">
+                <div class="flex flex-col gap-sm">
+                    <p class="font-label-caps text-label-caps text-primary font-bold">Produk</p>
+                    <a class="text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-2 underline-offset-4" href="#features">Fitur</a>
+                    <a class="text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-2 underline-offset-4" href="#benefits">Keunggulan</a>
+                    <a class="text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-2 underline-offset-4" href="#download">Unduh</a>
+                </div>
+                <div class="flex flex-col gap-sm">
+                    <p class="font-label-caps text-label-caps text-primary font-bold">Perusahaan</p>
+                    <a class="text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-2 underline-offset-4" href="#">Privasi</a>
+                    <a class="text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-2 underline-offset-4" href="#">Ketentuan</a>
+                    <a class="text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-2 underline-offset-4" href="#">Bantuan</a>
+                </div>
+                <div class="flex flex-col gap-sm">
+                    <p class="font-label-caps text-label-caps text-primary font-bold">Kontak</p>
+                    <p class="text-on-surface-variant">hello@simpul.app</p>
+                    <p class="text-on-surface-variant">Gabung Komunitas</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Subtle scroll reveal effect
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        entry.target.classList.remove('opacity-0', 'translate-y-10');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('transition-all', 'duration-1000', 'opacity-0', 'translate-y-10');
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

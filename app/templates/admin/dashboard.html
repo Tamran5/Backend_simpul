@@ -1,0 +1,178 @@
+{% extends "base_admin.html" %}
+
+{% set active_page = "dashboard" %}
+
+{% block title %}Dashboard | Simpul Admin{% endblock %}
+{% block header_title %}Beranda Utama{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-outline">Ringkasan Sistem</span>
+    <h2 class="font-serif text-3xl font-bold text-on-surface mt-1">Selamat Datang, {{ session.get('admin_name', 'Admin') }}</h2>
+    <p class="text-sm text-on-surface-variant mt-2">Berikut adalah ringkasan aktivitas platform Simpul hari ini.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-surface p-6 rounded-[24px] border border-outline-variant/30 pillowy-shadow flex flex-col justify-between relative overflow-hidden group">
+        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"></div>
+        <div class="flex justify-between items-start mb-4">
+            <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-[20px]">group</span>
+            </div>
+        </div>
+        <div>
+            <h3 class="text-3xl font-serif text-on-surface mb-1">2,842</h3>
+            <p class="text-xs text-on-surface-variant font-medium uppercase tracking-wider">Total Pengguna</p>
+        </div>
+    </div>
+
+    <div class="bg-surface p-6 rounded-[24px] border border-outline-variant/30 pillowy-shadow flex flex-col justify-between relative overflow-hidden group">
+        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"></div>
+        <div class="flex justify-between items-start mb-4">
+            <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-[20px]">storefront</span>
+            </div>
+        </div>
+        <div>
+            <h3 class="text-3xl font-serif text-on-surface mb-1">128</h3>
+            <p class="text-xs text-on-surface-variant font-medium uppercase tracking-wider">Mitra Vendor</p>
+        </div>
+    </div>
+
+    <div class="bg-surface p-6 rounded-[24px] border border-outline-variant/30 pillowy-shadow flex flex-col justify-between relative overflow-hidden group">
+        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"></div>
+        <div class="flex justify-between items-start mb-4">
+            <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+                <span class="material-symbols-outlined text-[20px]">layers</span>
+            </div>
+        </div>
+        <div>
+            <h3 class="text-3xl font-serif text-on-surface mb-1">42</h3>
+            <p class="text-xs text-on-surface-variant font-medium uppercase tracking-wider">Artikel Edukasi</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 space-y-6">
+        <div class="bg-surface rounded-[24px] pillowy-shadow border border-outline-variant/20 overflow-hidden flex flex-col">
+            <div class="px-6 py-5 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-lowest">
+                <h3 class="font-serif text-lg font-semibold text-on-surface">Daftar Vendor</h3>
+                <a href="/katalog-vendor" class="text-xs font-semibold text-primary hover:underline">Lihat Semua</a>
+            </div>
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left whitespace-nowrap">
+                    <tbody class="divide-y divide-outline-variant/20 bg-white">
+                        <tr class="hover:bg-surface-container-low/50 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="text-sm font-medium text-on-surface">Lumina Artistry</p>
+                                <p class="text-[12px] text-on-surface-variant">MUA • Bandung</p>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <span class="px-3 py-1 bg-secondary-container text-primary text-[10px] font-bold uppercase tracking-wider rounded-full">Mitra Baru</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-surface-container-low/50 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="text-sm font-medium text-on-surface">Grand Asteria Ballroom</p>
+                                <p class="text-[12px] text-on-surface-variant">Venue • Jakarta Pusat</p>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider rounded-full">Aktif</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-surface-container-low/50 transition-colors">
+                            <td class="px-6 py-4">
+                                <p class="text-sm font-medium text-on-surface">Flora & Fauna Decor</p>
+                                <p class="text-[12px] text-on-surface-variant">Decoration • Bali</p>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <span class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider rounded-full">Aktif</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-surface rounded-[24px] pillowy-shadow border border-outline-variant/20 p-6">
+            <div class="flex justify-between items-center mb-5">
+                <div>
+                    <h3 class="font-serif text-lg font-semibold text-on-surface">Progres Dokumen Persyaratan Pernikahan</h3>
+                    <p class="text-xs text-on-surface-variant mt-0.5">Rata-rata akumulasi kelengkapan berkas KUA dari seluruh klien aktif</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-2xl font-serif font-bold text-primary">68%</span>
+                    <p class="text-[10px] text-outline font-bold uppercase tracking-wider">Total Selesai</p>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <div class="flex justify-between text-xs font-medium mb-1.5">
+                        <span class="text-on-surface">Surat Pengantar Desa/Kelurahan (Model N1 - N4)</span>
+                        <span class="text-primary font-semibold">85%</span>
+                    </div>
+                    <div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+                        <div class="h-full bg-primary rounded-full transition-all duration-500" style="width: 85%"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs font-medium mb-1.5">
+                        <span class="text-on-surface">Fotokopi KTP, KK, & Akta Kelahiran Pasangan</span>
+                        <span class="text-primary font-semibold">92%</span>
+                    </div>
+                    <div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+                        <div class="h-full bg-primary rounded-full transition-all duration-500" style="width: 92%"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs font-medium mb-1.5">
+                        <span class="text-on-surface">Pasfoto Resmi Latar Biru (Ukuran 2x3 & 3x4)</span>
+                        <span class="text-primary font-semibold">54%</span>
+                    </div>
+                    <div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+                        <div class="h-full bg-primary-container rounded-full transition-all duration-500" style="width: 54%"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs font-medium mb-1.5">
+                        <span class="text-on-surface">Sertifikat Elsimil & Bukti Pemeriksaan Kesehatan Puskesmas</span>
+                        <span class="text-primary font-semibold">41%</span>
+                    </div>
+                    <div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+                        <div class="h-full bg-primary-container rounded-full transition-all duration-500" style="width: 41%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+    <div class="bg-surface rounded-[24px] pillowy-shadow border border-outline-variant/20 p-6 flex flex-col h-fit">
+        <h3 class="font-serif text-lg font-semibold text-on-surface mb-4">Aksi Cepat</h3>
+        <div class="space-y-3 flex-1">
+            <a href="/katalog-vendor" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant/30 hover:bg-primary-fixed/30 hover:border-primary/30 transition-all group">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">add_business</span>
+                    </div>
+                    <span class="text-sm font-medium text-on-surface">Tambah Vendor Baru</span>
+                </div>
+                <span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-[20px]">chevron_right</span>
+            </a>
+            <a href="/edukasi" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant/30 hover:bg-primary-fixed/30 hover:border-primary/30 transition-all group">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">post_add</span>
+                    </div>
+                    <span class="text-sm font-medium text-on-surface">Tulis Artikel Baru</span>
+                </div>
+                <span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-[20px]">chevron_right</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

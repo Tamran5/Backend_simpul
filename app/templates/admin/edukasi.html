@@ -1,0 +1,467 @@
+{% extends "base_admin.html" %}
+
+{% set active_page = "edukasi" %}
+
+{% block title %}Manajemen Edukasi | Simpul Admin{% endblock %}
+{% block header_title %}Edukasi{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4">
+    <div>
+        <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-outline">Konten & Panduan</span>
+        <h2 class="font-serif text-3xl font-bold text-on-surface mt-1">Kelola Artikel Edukasi</h2>
+    </div>
+    <div class="flex items-center gap-3 relative w-full md:w-auto justify-end">
+        <div class="relative w-full sm:w-64">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+            <input type="text" id="searchInput" placeholder="Cari judul atau isi artikel..." class="w-full pl-10 pr-4 py-2 bg-white border border-outline-variant rounded-full text-sm focus:outline-none focus:border-primary">
+        </div>
+        
+        <button id="filterBtn" class="px-4 py-2 bg-white border border-outline-variant rounded-full text-sm font-medium text-on-surface-variant hover:bg-surface-container-low transition-colors flex items-center gap-2 focus:outline-none shrink-0">
+            <span class="material-symbols-outlined text-[18px]">filter_list</span>
+            <span id="filterLabel" class="text-xs">Semua Kategori</span>
+        </button>
+
+        <div id="filterDropdown" class="hidden absolute right-36 md:right-36 top-12 w-48 bg-white rounded-2xl border border-outline-variant/30 py-2 z-50 pillowy-shadow animate-fade-in">
+            <div class="px-4 py-1.5 border-b border-outline-variant/10 mb-1">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-outline">Pilih Kategori</span>
+            </div>
+            <button class="filter-option w-full text-left px-4 py-2 text-xs font-medium text-on-surface hover:bg-surface-container-low transition-colors" data-value="all">Semua Kategori</button>
+            <button class="filter-option w-full text-left px-4 py-2 text-xs font-medium text-on-surface hover:bg-surface-container-low transition-colors" data-value="birokrasi">Birokrasi</button>
+            <button class="filter-option w-full text-left px-4 py-2 text-xs font-medium text-on-surface hover:bg-surface-container-low transition-colors" data-value="konseling">Konseling</button>
+            <button class="filter-option w-full text-left px-4 py-2 text-xs font-medium text-on-surface hover:bg-surface-container-low transition-colors" data-value="keuangan">Keuangan</button>
+            <button class="filter-option w-full text-left px-4 py-2 text-xs font-medium text-on-surface hover:bg-surface-container-low transition-colors" data-value="agama">Agama</button>
+        </div>
+
+        <button onclick="openModal('addModal')" class="px-5 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 active:scale-95 transition-all flex items-center gap-2 shadow-md shadow-primary/20 shrink-0">
+            <span class="material-symbols-outlined text-[18px]">add</span> Tambah Artikel
+        </button>
+    </div>
+</div>
+
+<div id="apiAlert" class="hidden mb-6 p-4 rounded-xl flex items-center gap-3 text-sm border transition-all duration-500">
+    <span id="apiAlertIcon" class="material-symbols-outlined"></span>
+    <span id="apiAlertMessage" class="font-medium"></span>
+</div>
+
+<div class="bg-surface rounded-[24px] pillowy-shadow border border-outline-variant/20 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse whitespace-nowrap">
+            <thead>
+                <tr class="border-b border-outline-variant/30 bg-surface-container-lowest">
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Judul & Ringkasan</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Kategori</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Target</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Status</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider text-right">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="articleTableBody" class="divide-y divide-outline-variant/20 bg-white">
+                {% for article in articles %}
+                <tr class="article-row hover:bg-surface-container-low/50 transition-colors" 
+                    data-category="{{ article.category|lower }}" 
+                    data-title="{{ article.title|lower }}" 
+                    data-content="{{ (article.content or '')|lower }}">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-primary font-semibold shrink-0">
+                                {{ article.category[:1]|upper }}
+                            </div>
+                            <div class="w-[380px]">
+                                <p class="text-sm font-semibold text-on-surface truncate">{{ article.title }}</p>
+                                <p class="text-[12px] text-on-surface-variant truncate">{{ article.content or 'Tidak ada isi konten.' }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 bg-secondary-container/60 text-primary text-[10px] font-bold uppercase tracking-wider rounded-full">
+                            {{ article.category }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-on-surface-variant font-medium">
+                        {{ article.target_religion if article.target_religion else 'Umum' }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {% if article.status == 'Diterbitkan' %}
+                        <span class="text-xs font-semibold text-primary uppercase tracking-wide">Diterbitkan</span>
+                        {% else %}
+                        <span class="text-xs font-semibold text-outline uppercase tracking-wide flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[16px]">edit_note</span> Draft
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="openViewModal('{{ article.id }}')" class="text-outline hover:text-primary p-1 transition-colors" title="Lihat Artikel">
+                            <span class="material-symbols-outlined text-[20px]">visibility</span>
+                        </button>
+                        <button onclick="openEditModal('{{ article.id }}')" class="text-outline hover:text-primary p-1 ml-1 transition-colors" title="Edit">
+                            <span class="material-symbols-outlined text-[20px]">edit</span>
+                        </button>
+                        <button onclick="openDeleteModal('{{ article.id }}')" class="text-outline hover:text-error p-1 ml-1 transition-colors" title="Hapus">
+                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                        </button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr id="emptyRow">
+                    <td colspan="5" class="px-6 py-10 text-center text-sm text-outline">Belum ada artikel edukasi yang dibuat.</td>
+                </tr>
+                {% endfor %}
+                <tr id="noResultRow" class="hidden">
+                    <td colspan="5" class="px-6 py-10 text-center text-sm text-outline">Artikel yang Anda cari tidak ditemukan.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+<div id="viewModal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+    <div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closeModal('viewModal')"></div>
+    <div class="bg-white w-full max-w-2xl rounded-[24px] pillowy-shadow relative z-10 overflow-hidden flex flex-col max-h-[85vh] animate-fade-in">
+        <img id="view_image" src="" alt="Banner" class="w-full h-40 object-cover bg-surface-container-low">
+        <div class="px-6 py-3 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-lowest">
+            <div class="flex items-center gap-2">
+                <span id="view_kategori" class="px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider rounded-full">Kategori</span>
+                <span id="view_target" class="px-2.5 py-0.5 bg-secondary-container/50 text-on-surface-variant text-[10px] font-bold uppercase tracking-wider rounded-full">Target</span>
+                <span id="view_time" class="text-xs text-outline font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">schedule</span> <span id="view_time_text"></span></span>
+            </div>
+            <button onclick="closeModal('viewModal')" class="text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="p-6 overflow-y-auto space-y-4 flex-1">
+            <h3 id="view_judul" class="font-serif text-2xl font-bold text-on-surface leading-snug">Judul Artikel</h3>
+            <hr class="border-outline-variant/20">
+            <p id="view_konten" class="text-sm text-on-surface-variant leading-relaxed whitespace-pre-line text-justify"></p>
+        </div>
+    </div>
+</div>
+
+<div id="addModal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+    <div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closeModal('addModal')"></div>
+    <div class="bg-surface-container-lowest w-full max-w-2xl rounded-[24px] pillowy-shadow relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="px-6 py-5 border-b border-outline-variant/20 flex justify-between items-center">
+            <h3 class="font-serif text-2xl text-on-surface font-semibold">Tambah Artikel Baru</h3>
+            <button onclick="closeModal('addModal')" class="text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <form id="addArticleForm">
+            <div class="p-6 overflow-y-auto space-y-5">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Judul Artikel</label>
+                    <input type="text" id="add_judul" required placeholder="Masukkan judul..." class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Kategori</label>
+                        <select id="add_kategori" class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary text-on-surface-variant">
+                            <option value="Birokrasi">Birokrasi</option>
+                            <option value="Konseling">Konseling</option>
+                            <option value="Keuangan">Keuangan</option>
+                            <option value="Agama">Agama</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Status Publikasi</label>
+                        <select id="add_status" class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary text-on-surface-variant">
+                            <option value="Draft">Draft</option>
+                            <option value="Diterbitkan">Diterbitkan</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="add_target_container" class="hidden">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-primary mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">menu_book</span> Spesifik Untuk Agama</label>
+                    <select id="add_target_religion" class="w-full bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary text-primary font-semibold">
+                        <option value="Umum">Umum (Semua Agama)</option>
+                        <option value="Islam">Islam</option>
+                        <option value="Kristen">Kristen</option>
+                        <option value="Katolik">Katolik</option>
+                        <option value="Hindu">Hindu</option>
+                        <option value="Buddha">Buddha</option>
+                        <option value="Konghucu">Konghucu</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Link Gambar Banner (URL)</label>
+                        <input type="url" id="add_image_url" placeholder="https://..." class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Estimasi Waktu Baca</label>
+                        <input type="text" id="add_read_time" placeholder="Contoh: 4 mnt" class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Isi Konten Panduan (Panjang)</label>
+                    <textarea id="add_konten" rows="6" minlength="200" maxlength="30000" required placeholder="Tuliskan isi panduan lengkap di sini..." class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary"></textarea>
+                </div>
+            </div>
+            <div class="px-6 py-5 border-t border-outline-variant/20 flex justify-end gap-3 bg-surface">
+                <button type="button" onclick="closeModal('addModal')" class="px-5 py-2.5 rounded-full text-sm font-medium text-on-surface-variant hover:bg-outline-variant/30">Batal</button>
+                <button type="submit" class="px-5 py-2.5 bg-primary text-white rounded-full text-sm font-medium">Simpan Artikel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="editModal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+    <div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closeModal('editModal')"></div>
+    <div class="bg-surface-container-lowest w-full max-w-2xl rounded-[24px] pillowy-shadow relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="px-6 py-5 border-b border-outline-variant/20 flex justify-between items-center">
+            <h3 class="font-serif text-2xl text-on-surface font-semibold">Edit Artikel</h3>
+            <button onclick="closeModal('editModal')" class="text-outline hover:text-error transition-colors"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <form id="editArticleForm">
+            <input type="hidden" id="edit_id">
+            <div class="p-6 overflow-y-auto space-y-5">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Judul Artikel</label>
+                    <input type="text" id="edit_judul" required class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Kategori</label>
+                        <select id="edit_kategori" class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary text-on-surface-variant">
+                            <option value="Birokrasi">Birokrasi</option>
+                            <option value="Konseling">Konseling</option>
+                            <option value="Keuangan">Keuangan</option>
+                            <option value="Agama">Agama</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Status Publikasi</label>
+                        <select id="edit_status" class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary text-on-surface-variant">
+                            <option value="Draft">Draft</option>
+                            <option value="Diterbitkan">Diterbitkan</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="edit_target_container" class="hidden">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-primary mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">menu_book</span> Spesifik Untuk Agama</label>
+                    <select id="edit_target_religion" class="w-full bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary text-primary font-semibold">
+                        <option value="Umum">Umum (Semua Agama)</option>
+                        <option value="Islam">Islam</option>
+                        <option value="Kristen">Kristen</option>
+                        <option value="Katolik">Katolik</option>
+                        <option value="Hindu">Hindu</option>
+                        <option value="Buddha">Buddha</option>
+                        <option value="Konghucu">Konghucu</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Link Gambar Banner (URL)</label>
+                        <input type="url" id="edit_image_url" placeholder="https://..." class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Estimasi Waktu Baca</label>
+                        <input type="text" id="edit_read_time" placeholder="Contoh: 4 mnt" class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Isi Konten Panduan (Panjang)</label>
+                    <textarea id="edit_konten" rows="6" minlength="200" maxlength="30000" required class="w-full bg-surface border border-outline-variant rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary"></textarea>
+                </div>
+            </div>
+            <div class="px-6 py-5 border-t border-outline-variant/20 flex justify-end gap-3 bg-surface">
+                <button type="button" onclick="closeModal('editModal')" class="px-5 py-2.5 rounded-full text-sm font-medium text-on-surface-variant hover:bg-outline-variant/30">Batal</button>
+                <button type="submit" class="px-5 py-2.5 bg-primary text-white rounded-full text-sm font-medium">Perbarui Data</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="deleteModal" class="fixed inset-0 z-50 hidden flex items-center justify-center px-4">
+    <div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closeModal('deleteModal')"></div>
+    <div class="bg-white w-full max-w-sm rounded-[24px] pillowy-shadow relative z-10 p-6 text-center">
+        <div class="w-12 h-12 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto mb-3">
+            <span class="material-symbols-outlined text-[24px]">delete</span>
+        </div>
+        <h3 class="font-serif text-lg font-bold text-on-surface mb-1">Hapus Artikel Ini?</h3>
+        <p class="text-xs text-on-surface-variant mb-6">Tindakan ini permanen dan akan menghapus panduan dari aplikasi mobile klien.</p>
+        <input type="hidden" id="delete_id">
+        <div class="flex gap-3 justify-center">
+            <button onclick="closeModal('deleteModal')" class="px-4 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:bg-surface-container-low w-full">Batal</button>
+            <button onclick="submitDeleteArticle()" class="px-4 py-2 bg-error text-white rounded-full text-sm font-medium w-full">Hapus</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const token = localStorage.getItem('simpul_admin_token');
+    const alertBox = document.getElementById('apiAlert');
+    const alertIcon = document.getElementById('apiAlertIcon');
+    const alertMessage = document.getElementById('apiAlertMessage');
+
+    function openModal(modalId) { document.getElementById(modalId).classList.remove('hidden'); }
+    function closeModal(modalId) { document.getElementById(modalId).classList.add('hidden'); }
+
+    function showAlert(message, isSuccess) {
+        alertBox.classList.remove('hidden', 'bg-primary/10', 'text-primary', 'border-primary/20', 'bg-error/10', 'text-error', 'border-error/20');
+        if(isSuccess) {
+            alertBox.classList.add('bg-primary/10', 'text-primary', 'border-primary/20');
+            alertIcon.textContent = 'check_circle';
+        } else {
+            alertBox.classList.add('bg-error/10', 'text-error', 'border-error/20');
+            alertIcon.textContent = 'error';
+        }
+        alertMessage.textContent = message;
+        setTimeout(() => { alertBox.classList.add('hidden'); }, 3500);
+    }
+
+    // ==============================================================================
+    // LOGIKA FILTER KATEGORI
+    // ==============================================================================
+    const searchInput = document.getElementById('searchInput');
+    const filterBtn = document.getElementById('filterBtn');
+    const filterDropdown = document.getElementById('filterDropdown');
+    const filterLabel = document.getElementById('filterLabel');
+    const filterOptions = document.querySelectorAll('.filter-option');
+    const articleRows = document.querySelectorAll('.article-row');
+    const noResultRow = document.getElementById('noResultRow');
+
+    let chosenCategory = 'all';
+    let searchQuery = '';
+
+    function filterTable() {
+        let visibleCount = 0;
+        articleRows.forEach(row => {
+            const category = row.getAttribute('data-category');
+            const title = row.getAttribute('data-title');
+            const content = row.getAttribute('data-content');
+            const matchesCategory = (chosenCategory === 'all' || category === chosenCategory);
+            const matchesSearch = (title.includes(searchQuery) || content.includes(searchQuery));
+
+            if (matchesCategory && matchesSearch) {
+                row.classList.remove('hidden');
+                visibleCount++;
+            } else {
+                row.classList.add('hidden');
+            }
+        });
+        if (visibleCount === 0 && articleRows.length > 0) {
+            noResultRow.classList.remove('hidden');
+        } else {
+            noResultRow.classList.add('hidden');
+        }
+    }
+
+    if (searchInput) searchInput.addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase().trim(); filterTable(); });
+    if (filterBtn && filterDropdown) {
+        filterBtn.addEventListener('click', (e) => { e.stopPropagation(); filterDropdown.classList.toggle('hidden'); });
+        document.addEventListener('click', (e) => { if (!filterDropdown.contains(e.target)) filterDropdown.classList.add('hidden'); });
+        filterOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                chosenCategory = option.getAttribute('data-value');
+                filterLabel.textContent = option.textContent.trim();
+                filterDropdown.classList.add('hidden');
+                filterTable();
+            });
+        });
+    }
+
+    // ==============================================================================
+    // LOGIKA DINAMIS TAMPILKAN PILIHAN AGAMA JIKA KATEGORINYA "AGAMA"
+    // ==============================================================================
+    document.getElementById('add_kategori').addEventListener('change', function() {
+        const container = document.getElementById('add_target_container');
+        if(this.value === 'Agama') container.classList.remove('hidden');
+        else { container.classList.add('hidden'); document.getElementById('add_target_religion').value = 'Umum'; }
+    });
+
+    document.getElementById('edit_kategori').addEventListener('change', function() {
+        const container = document.getElementById('edit_target_container');
+        if(this.value === 'Agama') container.classList.remove('hidden');
+        else { container.classList.add('hidden'); document.getElementById('edit_target_religion').value = 'Umum'; }
+    });
+
+
+
+    // --- GET: LIHAT ARTIKEL DETAIL ---
+    async function openViewModal(id) {
+        const response = await fetch(`/articles/${id}`, { method: 'GET' }); 
+        const result = await response.json();
+        if (response.status === 200) {
+            document.getElementById('view_judul').textContent = result.data.judul;
+            document.getElementById('view_kategori').textContent = result.data.kategori;
+            document.getElementById('view_target').textContent = result.data.target_religion || 'Umum';
+            document.getElementById('view_time_text').textContent = result.data.read_time || '3 mnt';
+            document.getElementById('view_konten').textContent = result.data.konten;
+            
+            const imgEl = document.getElementById('view_image');
+            // Pastikan image_url ada dalam response API kamu
+            if(result.data.image_url) { imgEl.src = result.data.image_url; imgEl.classList.remove('hidden'); }
+            else { imgEl.classList.add('hidden'); }
+            
+            openModal('viewModal');
+        } else { showAlert("Gagal memuat artikel: " + result.message, false); }
+    }
+
+    // --- GET: AMBIL DATA SEBELUM EDIT ---
+    async function openEditModal(id) {
+        const response = await fetch(`/articles/${id}`, { method: 'GET' }); 
+        const result = await response.json();
+        
+        if (response.status === 200) {
+            document.getElementById('edit_id').value = result.data.id;
+            document.getElementById('edit_judul').value = result.data.judul;
+            document.getElementById('edit_kategori').value = result.data.kategori;
+            document.getElementById('edit_status').value = result.data.status;
+            document.getElementById('edit_konten').value = result.data.konten;
+            document.getElementById('edit_image_url').value = result.data.image_url || '';
+            document.getElementById('edit_read_time').value = result.data.read_time || '';
+            
+            // Atur pilihan Agama & visibilitas container
+            const targetRel = result.data.target_religion || 'Umum';
+            document.getElementById('edit_target_religion').value = targetRel;
+            
+            const container = document.getElementById('edit_target_container');
+            if (result.data.kategori === 'Agama') container.classList.remove('hidden');
+            else container.classList.add('hidden');
+
+            openModal('editModal');
+        } else { showAlert("Gagal mengambil data: " + result.message, false); }
+    }
+
+    // --- PUT: UPDATE ARTIKEL ---
+    document.getElementById('editArticleForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('edit_id').value;
+        const bodyData = {
+            judul: document.getElementById('edit_judul').value,
+            kategori: document.getElementById('edit_kategori').value,
+            status: document.getElementById('edit_status').value,
+            konten: document.getElementById('edit_konten').value,
+            image_url: document.getElementById('edit_image_url').value,
+            read_time: document.getElementById('edit_read_time').value,
+            target_religion: document.getElementById('edit_target_religion').value
+        };
+
+        const response = await fetch(`/articles/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' }, // WAJIB
+            body: JSON.stringify(bodyData) // WAJIB
+        });
+        const result = await response.json();
+        if(response.status === 200) {
+            closeModal('editModal'); showAlert(result.message, true);
+            setTimeout(() => { location.reload(); }, 1000);
+        } else { showAlert(result.message, false); }
+    });
+
+    // --- DELETE: HAPUS ARTIKEL ---
+    async function submitDeleteArticle() {
+        const id = document.getElementById('delete_id').value;
+        const response = await fetch(`/articles/${id}`, { 
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' } 
+        }); 
+        const result = await response.json();
+        if(response.status === 200) {
+            closeModal('deleteModal'); showAlert(result.message, true);
+            setTimeout(() => { location.reload(); }, 1000);
+        } else { showAlert(result.message, false); }
+    }
+</script>
+{% endblock %}
