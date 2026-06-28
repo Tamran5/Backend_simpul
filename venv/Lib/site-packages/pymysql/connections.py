@@ -131,10 +131,13 @@ class Connection:
     :param init_command: Initial SQL statement to run when connection is established.
     :param connect_timeout: The timeout for connecting to the database in seconds.
         (default: 10, min: 1, max: 31536000)
-    :param ssl: A dict of arguments similar to mysql_ssl_set()'s parameters or an ssl.SSLContext.
+    :param ssl: An ssl.SSLContext, or a dict of arguments similar to mysql_ssl_set()'s parameters.
+        Passing a dict is deprecated; use the individual ``ssl_*`` parameters or an
+        ``ssl.SSLContext`` instead.
     :param ssl_ca: Path to the file that contains a PEM-formatted CA certificate.
     :param ssl_cert: Path to the file that contains a PEM-formatted client certificate.
-    :param ssl_disabled: A boolean value that disables usage of TLS.
+    :param ssl_disabled: A boolean value that disables usage of TLS. Unlike other SSL options,
+        setting this to True explicitly prohibits the use of TLS, even if the server supports it.
     :param ssl_key: Path to the file that contains a PEM-formatted private key for
         the client certificate.
     :param ssl_key_password: The password for the client certificate private key.
@@ -214,16 +217,12 @@ class Connection:
         db=None,  # deprecated
     ):
         if db is not None and database is None:
-            # We will raise warning in 2022 or later.
-            # See https://github.com/PyMySQL/PyMySQL/issues/939
-            # warnings.warn("'db' is deprecated, use 'database'", DeprecationWarning, 3)
+            warnings.warn("'db' is deprecated, use 'database'", DeprecationWarning, 3)
             database = db
         if passwd is not None and not password:
-            # We will raise warning in 2022 or later.
-            # See https://github.com/PyMySQL/PyMySQL/issues/939
-            # warnings.warn(
-            #    "'passwd' is deprecated, use 'password'", DeprecationWarning, 3
-            # )
+            warnings.warn(
+                "'passwd' is deprecated, use 'password'", DeprecationWarning, 3
+            )
             password = passwd
 
         if compress or named_pipe:
@@ -273,6 +272,7 @@ class Connection:
                         ssl[key] = value
 
         self.ssl = False
+        self._ssl_required = False
         if not ssl_disabled:
             if ssl_ca or ssl_cert or ssl_key or ssl_verify_cert or ssl_verify_identity:
                 ssl = {
@@ -292,8 +292,15 @@ class Connection:
                 if not SSL_ENABLED:
                     raise NotImplementedError("ssl module not found")
                 self.ssl = True
+                self._ssl_required = True
                 client_flag |= CLIENT.SSL
                 self.ctx = self._create_ssl_ctx(ssl)
+            elif SSL_ENABLED:
+                # No explicit SSL options specified: use PREFERRED mode.
+                # Attempt SSL but fall back gracefully if the server doesn't support it.
+                self.ssl = True
+                self._ssl_required = False
+                self.ctx = self._create_ssl_ctx({})
 
         self.host = host or "localhost"
         self.port = port or 3306
@@ -587,15 +594,24 @@ class Connection:
             raise TypeError("thread_id must be an integer")
         self.query(f"KILL {thread_id:d}")
 
-    def ping(self, reconnect=True):
+    def ping(self, reconnect=False):
         """
         Check if the server is alive.
+
+        `reconnect` is deprecated. Create a new connection if you want to reconnect.
 
         :param reconnect: If the connection is closed, reconnect.
         :type reconnect: boolean
 
         :raise Error: If the connection is closed and reconnect=False.
         """
+        # emit deprecation warning for reconnect.
+        if reconnect:
+            warnings.warn(
+                "The 'reconnect' argument is deprecated. Create a new connection if you want to reconnect.",
+                DeprecationWarning,
+                2,
+            )
         if self._sock is None:
             if reconnect:
                 self.connect()
@@ -614,6 +630,11 @@ class Connection:
 
     def set_charset(self, charset):
         """Deprecated. Use set_character_set() instead."""
+        warnings.warn(
+            "'set_charset' is deprecated, use 'set_character_set' instead",
+            DeprecationWarning,
+            2,
+        )
         # This function has been implemented in old PyMySQL.
         # But this name is different from MySQLdb.
         # So we keep this function for compatibility and add
@@ -890,13 +911,34 @@ class Connection:
         if isinstance(self.user, str):
             self.user = self.user.encode(self.encoding)
 
+        # Determine flags for the initial handshake packet.
+        # CLIENT.SSL is added conditionally: for REQUIRED mode it is already set in
+        # self.client_flag, but for PREFERRED mode it is only added when the server
+        # also advertises SSL support.
+        # _do_ssl is set here and checked below for sha256_password auth.
+        client_flags = self.client_flag
+        if self.ssl:
+            if self.server_capabilities & CLIENT.SSL:
+                # SSL upgrade: include CLIENT.SSL flag and wrap the socket.
+                _do_ssl = True
+                client_flags |= CLIENT.SSL
+            elif self._ssl_required:
+                raise err.OperationalError(
+                    CR.CR_SSL_CONNECTION_ERROR,
+                    "SSL is required but the server doesn't support it",
+                )
+            else:
+                # PREFERRED mode: server doesn't support SSL, fall back to non-SSL.
+                _do_ssl = False
+        else:
+            _do_ssl = False
+
         data_init = struct.pack(
-            "<iIB23s", self.client_flag, MAX_PACKET_LEN, charset_id, b""
+            "<iIB23s", client_flags, MAX_PACKET_LEN, charset_id, b""
         )
 
-        if self.ssl and self.server_capabilities & CLIENT.SSL:
+        if _do_ssl:
             self.write_packet(data_init)
-
             self._sock = self.ctx.wrap_socket(self._sock, server_hostname=self.host)
             self._rfile = self._sock.makefile("rb")
             self._secure = True
@@ -923,7 +965,7 @@ class Connection:
                     print("caching_sha2: empty password")
         elif self._auth_plugin_name == "sha256_password":
             plugin_name = b"sha256_password"
-            if self.ssl and self.server_capabilities & CLIENT.SSL:
+            if _do_ssl:
                 authresp = self.password + b"\0"
             elif self.password:
                 authresp = b"\1"  # request public key

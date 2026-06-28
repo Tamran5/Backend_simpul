@@ -67,7 +67,7 @@
                 <span class="text-sm">Edukasi</span>
             </a>
             
-            <a href="/katalog-vendor" class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors {% if active_page == 'vendor' %}bg-primary-fixed/50 text-primary font-semibold{% else %}text-on-surface-variant hover:bg-surface-container-low font-medium{% endif %}">
+            <a href="/vendor" class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors {% if active_page == 'vendor' %}bg-primary-fixed/50 text-primary font-semibold{% else %}text-on-surface-variant hover:bg-surface-container-low font-medium{% endif %}">
                 <span class="material-symbols-outlined text-[22px]">storefront</span>
                 <span class="text-sm">Katalog Vendor</span>
             </a>
@@ -75,6 +75,10 @@
             <a href="/manajemen-pengguna" class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors {% if active_page == 'pengguna' %}bg-primary-fixed/50 text-primary font-semibold{% else %}text-on-surface-variant hover:bg-surface-container-low font-medium{% endif %}">
                 <span class="material-symbols-outlined text-[22px]">group</span>
                 <span class="text-sm">Manajemen Pengguna</span>
+            </a>
+            <a href="/admin/users/dokumen" class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors {% if active_page == 'dokumen' %}bg-primary-fixed/50 text-primary font-semibold{% else %}text-on-surface-variant hover:bg-surface-container-low font-medium{% endif %}">
+                <span class="material-symbols-outlined text-[22px]">folder_open</span>
+                <span class="text-sm">Dokumen Pengguna</span>
             </a>
         </nav>
 
@@ -89,8 +93,7 @@
             </button>
             <div class="flex items-center gap-3 px-4 pt-4 mt-2">
     <div class="w-8 h-8 rounded-full bg-primary-container overflow-hidden">
-        <img src="{% if session.get('admin_id') %}{{ url_for('static', filename='img/avatars/avatar_' ~ session.get('admin_id') ~ '.jpg') }}{% else %}https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80{% endif %}" 
-             alt="Admin" class="w-full h-full object-cover">
+        <img src="{% if session.get('admin_id') %}{{ url_for('static', filename='img/avatars/avatar_' ~ session.get('admin_id') ~ '.jpg') }}{% else %}...{% endif %}" ...>
     </div>
     <div>
         <p class="text-sm font-semibold text-on-surface">{{ session.get('admin_name', 'Admin User') }}</p>

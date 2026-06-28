@@ -28,7 +28,7 @@
                     <div class="flex flex-col items-center gap-3 shrink-0 mx-auto sm:mx-0">
                         <div class="w-24 h-24 rounded-full border-4 border-surface-container-lowest shadow-md overflow-hidden bg-primary-container relative group">
                             <img id="avatarPreview" 
-                                 src="{{ url_for('static', filename='img/avatars/avatar_' ~ admin.id ~ '.jpg') }}" 
+                                 src="{{ url_for('static', filename='img/avatars/' ~ admin.foto_profil) if admin.foto_profil else 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80' }}" 
                                  onerror="this.src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80'" 
                                  alt="Admin" class="w-full h-full object-cover">
                             <div id="uploadOverlay" class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
@@ -134,17 +134,21 @@
             avatarPreview.src = avatarPreview.src + '?t=' + timestamp;
         }
 
-        // --- POIN 1: AJAX PUT UPDATE PROFIL ---
+        // --- AJAX KE ROUTE SESSION (BUKAN JWT) ---
         const profileForm = document.getElementById('profileForm');
         profileForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(profileForm);
-            
-            const token = localStorage.getItem('simpul_admin_token');
-            const response = await fetch('/api/admin/profile', { method: 'PUT', headers: {'Authorization': 'Bearer ' + token},body: formData });
+
+            const response = await fetch('/pengaturan/update-profil', {
+                method: 'POST',
+                body: formData,
+                // Tidak perlu header Authorization — browser otomatis
+                // mengirim cookie session karena halaman ini sudah login.
+            });
             const result = await response.json();
 
-            if(response.status === 200) {
+            if (response.status === 200) {
                 showAlert(result.message, true);
                 setTimeout(() => { location.reload(); }, 1000);
             } else {
@@ -152,7 +156,6 @@
             }
         });
 
-        // --- POIN 1: AJAX PATCH UBAH PASSWORD ---
         const passwordForm = document.getElementById('passwordForm');
         passwordForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -160,15 +163,14 @@
             const password_baru = document.getElementById('password_baru').value;
             const konfirmasi_password = document.getElementById('konfirmasi_password').value;
 
-            const token = localStorage.getItem('simpul_admin_token');
-            const response = await fetch('/api/admin/password', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json','Authorization': 'Bearer ' + token},
-                body: JSON.stringify({ password_lama, password_baru, konfirmasi_password })
+            const response = await fetch('/pengaturan/ubah-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password_lama, password_baru, konfirmasi_password }),
             });
             const result = await response.json();
 
-            if(response.status === 200) {
+            if (response.status === 200) {
                 showAlert(result.message, true);
                 passwordForm.reset();
             } else {

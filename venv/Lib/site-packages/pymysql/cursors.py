@@ -1,5 +1,4 @@
 import re
-import warnings
 from . import err
 
 
@@ -8,8 +7,11 @@ from . import err
 #: You can use it to load large dataset.
 RE_INSERT_VALUES = re.compile(
     r"\s*((?:INSERT|REPLACE)\b.+\bVALUES?\s*)"
-    + r"(\(\s*(?:%s|%\(.+\)s)\s*(?:,\s*(?:%s|%\(.+\)s)\s*)*\))"
-    + r"(\s*(?:ON DUPLICATE.*)?);?\s*\Z",
+    + r"(\(\s*(?:%s|%\([^)]+\)s)\s*(?:,\s*(?:%s|%\([^)]+\)s)\s*)*\))"
+    + r'(\s*(?:AS\s+(?:`[^`]+`|"[^"]+"|[0-9A-Za-z_$]+)\s*'
+    + r'(?:\(\s*(?:`[^`]+`|"[^"]+"|[0-9A-Za-z_$]+)\s*'
+    + r'(?:,\s*(?:`[^`]+`|"[^"]+"|[0-9A-Za-z_$]+)\s*)*\))?\s*)?'
+    + r"(?:ON DUPLICATE.*)?);?\s*\Z",
     re.IGNORECASE | re.DOTALL,
 )
 
@@ -358,30 +360,6 @@ class Cursor:
         if row is None:
             raise StopIteration
         return row
-
-    def __getattr__(self, name):
-        # DB-API 2.0 optional extension says these errors can be accessed
-        # via Connection object. But MySQLdb had defined them on Cursor object.
-        if name in (
-            "Warning",
-            "Error",
-            "InterfaceError",
-            "DatabaseError",
-            "DataError",
-            "OperationalError",
-            "IntegrityError",
-            "InternalError",
-            "ProgrammingError",
-            "NotSupportedError",
-        ):
-            # Deprecated since v1.1
-            warnings.warn(
-                "PyMySQL errors hould be accessed from `pymysql` package",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            return getattr(err, name)
-        raise AttributeError(name)
 
 
 class DictCursorMixin:

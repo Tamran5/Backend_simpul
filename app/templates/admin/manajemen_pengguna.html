@@ -68,6 +68,7 @@
                     <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Email Akun</th>
                     <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Karakteristik</th>
                     <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Status Akun</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Status Sinkronisasi</th>
                     <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider text-right">Aksi</th>
                 </tr>
             </thead>
@@ -96,15 +97,28 @@
                         </span>
                         {% endif %}
                     </td>
+                    <td class="px-6 py-5">
+                        {% if user.is_synced %}
+                        <span class="flex items-center gap-1.5 text-xs font-medium text-primary">
+                            <span class="material-symbols-outlined text-[14px]">link</span>
+                            Tersinkron{% if user.partner_name %} dengan {{ user.partner_name }}{% endif %}
+                        </span>
+                        {% else %}
+                        <span class="flex items-center gap-1.5 text-xs font-medium text-outline">
+                            <span class="material-symbols-outlined text-[14px]">link_off</span>
+                            Belum Tersinkron
+                        </span>
+                        {% endif %}
+                    </td>
                     <td class="px-6 py-5 text-right">
-                        <button onclick="openDeleteModal('{{ user.id }}')" class="text-outline hover:text-error p-1 transition-colors">
-                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                        <button onclick="openViewModal('{{ user.id }}')" class="text-outline hover:text-primary p-1 transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">visibility</span>
                         </button>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="5" class="px-6 py-10 text-center text-sm text-on-surface-variant">Belum ada pengguna terdaftar di database MySQL.</td>
+                    <td colspan="6" class="px-6 py-10 text-center text-sm text-on-surface-variant">Belum ada pengguna terdaftar di database MySQL.</td>
                 </tr>
                 {% endfor %}
 
@@ -113,17 +127,53 @@
     </div>
 </div>
 
-<div id="deleteModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center px-4">
-    <div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
-    <div class="bg-white w-full max-w-sm rounded-[24px] pillowy-shadow relative z-10 p-6 text-center animate-fade-in">
-        <div class="w-12 h-12 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto mb-3">
-            <span class="material-symbols-outlined text-[24px]">delete</span>
+<div id="viewModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center px-4">
+    <div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closeViewModal()"></div>
+    <div class="bg-white w-full max-w-md rounded-[24px] pillowy-shadow relative z-10 p-6 animate-fade-in">
+        <div class="flex items-start justify-between mb-4">
+            <h3 class="font-serif text-lg font-bold text-on-surface">Detail Pengguna</h3>
+            <button onclick="closeViewModal()" class="text-outline hover:text-on-surface">
+                <span class="material-symbols-outlined text-[22px]">close</span>
+            </button>
         </div>
-        <h3 class="font-serif text-lg font-bold text-on-surface mb-1">Hapus Data Klien?</h3>
-        <p class="text-xs text-on-surface-variant mb-6">Tindakan ini permanen dan menghapus seluruh data pendaftaran mereka dari database.</p>
-        <div class="flex gap-3 justify-center">
-            <button onclick="closeDeleteModal()" class="px-4 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:bg-surface-container-low w-full">Batal</button>
-            <button id="confirmDeleteBtn" class="px-4 py-2 bg-error text-white rounded-full text-sm font-medium w-full">Hapus Tetap</button>
+
+        <div id="viewModalLoading" class="py-10 text-center text-sm text-on-surface-variant">
+            Memuat data...
+        </div>
+
+        <div id="viewModalContent" class="hidden space-y-3 text-sm">
+            <div class="flex justify-between border-b border-outline-variant/20 pb-2">
+                <span class="text-on-surface-variant">Nama</span>
+                <span id="vName" class="font-medium text-on-surface"></span>
+            </div>
+            <div class="flex justify-between border-b border-outline-variant/20 pb-2">
+                <span class="text-on-surface-variant">Email</span>
+                <span id="vEmail" class="font-medium text-on-surface"></span>
+            </div>
+            <div class="flex justify-between border-b border-outline-variant/20 pb-2">
+                <span class="text-on-surface-variant">Jenis Kelamin</span>
+                <span id="vGender" class="font-medium text-on-surface"></span>
+            </div>
+            <div class="flex justify-between border-b border-outline-variant/20 pb-2">
+                <span class="text-on-surface-variant">Agama</span>
+                <span id="vReligion" class="font-medium text-on-surface"></span>
+            </div>
+            <div class="flex justify-between border-b border-outline-variant/20 pb-2">
+                <span class="text-on-surface-variant">Status Verifikasi</span>
+                <span id="vVerified" class="font-medium text-on-surface"></span>
+            </div>
+            <div class="flex justify-between border-b border-outline-variant/20 pb-2">
+                <span class="text-on-surface-variant">Status Sinkronisasi</span>
+                <span id="vSynced" class="font-medium text-on-surface"></span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-on-surface-variant">Pasangan</span>
+                <span id="vPartner" class="font-medium text-on-surface"></span>
+            </div>
+        </div>
+
+        <div id="viewModalError" class="hidden py-10 text-center text-sm text-error">
+            Gagal memuat data pengguna.
         </div>
     </div>
 </div>
@@ -131,8 +181,6 @@
 
 {% block scripts %}
 <script>
-    let userIdToDelete = null;
-
     // --- INTERAKSI DROPDOWN FILTER STATUS ---
     const filterBtn = document.getElementById('filterBtn');
     const filterDropdown = document.getElementById('filterDropdown');
@@ -179,44 +227,39 @@
         filterDropdown.classList.add('hidden');
     }
 
-    // --- AJAX DELETE KE API FLASK RESTRUCTURING ---
-    function openDeleteModal(id) {
-        userIdToDelete = id;
-        document.getElementById('deleteModal').classList.remove('hidden');
-    }
+    // --- MODAL LIHAT DETAIL PENGGUNA ---
+    function openViewModal(id) {
+        document.getElementById('viewModal').classList.remove('hidden');
+        document.getElementById('viewModalLoading').classList.remove('hidden');
+        document.getElementById('viewModalContent').classList.add('hidden');
+        document.getElementById('viewModalError').classList.add('hidden');
 
-    function closeDeleteModal() {
-        document.getElementById('deleteModal').classList.add('hidden');
-        userIdToDelete = null;
-    }
+        fetch(`/admin/users/${id}`)
+            .then(res => {
+                if (!res.ok) throw new Error('not ok');
+                return res.json();
+            })
+            .then(json => {
+                const u = json.data;
+                document.getElementById('vName').textContent = u.name;
+                document.getElementById('vEmail').textContent = u.email;
+                document.getElementById('vGender').textContent = u.gender || '-';
+                document.getElementById('vReligion').textContent = u.religion || '-';
+                document.getElementById('vVerified').textContent = u.is_verified ? 'Terverifikasi' : 'Belum Verifikasi';
+                document.getElementById('vSynced').textContent = u.is_synced ? 'Tersinkron' : 'Belum Tersinkron';
+                document.getElementById('vPartner').textContent = u.partner_name || '-';
 
-    // Eksekusi Hapus Menggunakan Fetch API JWT Berdasarkan Poin 3 Rubrik
-    document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
-        if (!userIdToDelete) return;
-
-        try {
-            // Mengambil token JWT admin dari localStorage web dashboard kamu
-            const token = localStorage.getItem('simpul_jwt_token');
-
-            const response = await fetch(`/api/admin/users/${userIdToDelete}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                document.getElementById('viewModalLoading').classList.add('hidden');
+                document.getElementById('viewModalContent').classList.remove('hidden');
+            })
+            .catch(() => {
+                document.getElementById('viewModalLoading').classList.add('hidden');
+                document.getElementById('viewModalError').classList.remove('hidden');
             });
+    }
 
-            if (response.ok) {
-                // Sukses terhapus di database, langsung reload halaman agar data sinkron terbaru
-                window.location.reload();
-            } else {
-                alert("Gagal menghapus data. Anda mungkin tidak memiliki hak akses admin.");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Terjadi kesalahan koneksi ke server.");
-        } finally {
-            closeDeleteModal();
-        }
-    });
+    function closeViewModal() {
+        document.getElementById('viewModal').classList.add('hidden');
+    }
 </script>
 {% endblock %}

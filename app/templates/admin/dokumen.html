@@ -1,0 +1,80 @@
+{% extends "base_admin.html" %}
+
+{% set active_page = "dokumen" %}
+
+{% block title %}Dokumen Pengguna | Simpul Admin{% endblock %}
+{% block header_title %}Monitoring Dokumen{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
+    <div>
+        <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-outline">Audit Berkas</span>
+        <h2 class="font-serif text-3xl font-bold text-on-surface mt-1">Dokumen Diunggah Pengguna</h2>
+    </div>
+
+    <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Cari nama, email, atau langkah..." class="w-full sm:w-72 pl-10 pr-4 py-2 bg-white border border-outline-variant rounded-full text-sm focus:outline-none focus:border-primary">
+    </div>
+</div>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="bg-surface p-5 rounded-[20px] border border-outline-variant/30 pillowy-shadow">
+        <p class="text-xs text-on-surface-variant mb-1 font-medium">Total Dokumen</p>
+        <h3 class="text-3xl font-serif text-on-surface">{{ total_documents }}</h3>
+    </div>
+    <div class="bg-surface p-5 rounded-[20px] border border-outline-variant/30 pillowy-shadow">
+        <p class="text-xs text-primary mb-1 font-semibold">Pengguna Sudah Upload</p>
+        <h3 class="text-3xl font-serif text-primary">{{ total_users_with_docs }}</h3>
+    </div>
+</div>
+
+<div class="bg-surface rounded-[24px] pillowy-shadow border border-outline-variant/20 overflow-hidden mt-6">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left whitespace-nowrap" id="docTable">
+            <thead>
+                <tr class="border-b border-outline-variant/30 bg-surface-container-lowest">
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Nama Klien</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Email</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Langkah</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Lembaga</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider">Diunggah</th>
+                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant tracking-wider text-right">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant/20 bg-white">
+                {% for doc in documents %}
+                <tr class="hover:bg-surface-container-low/50 transition-colors doc-row">
+                    <td class="px-6 py-5 text-sm font-medium text-on-surface name-cell">{{ doc.user_name }}</td>
+                    <td class="px-6 py-5 text-sm text-on-surface-variant email-cell">{{ doc.user_email }}</td>
+                    <td class="px-6 py-5 text-xs text-on-surface-variant step-cell">{{ doc.step_title }}</td>
+                    <td class="px-6 py-5 text-xs text-on-surface-variant">{{ doc.target_institution }}</td>
+                    <td class="px-6 py-5 text-xs text-on-surface-variant">{{ doc.uploaded_at.strftime('%d %b %Y, %H:%M') if doc.uploaded_at else '-' }}</td>
+                    <td class="px-6 py-5 text-right">
+                        <a href="{{ url_for('admin_users.view_document_file', progress_id=doc.progress_id) }}" target="_blank" class="text-primary hover:underline text-xs font-medium">Lihat Dokumen</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="px-6 py-10 text-center text-sm text-on-surface-variant">Belum ada dokumen yang diunggah pengguna.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function searchTable() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        document.querySelectorAll('.doc-row').forEach(row => {
+            const name = row.querySelector('.name-cell').textContent.toLowerCase();
+            const email = row.querySelector('.email-cell').textContent.toLowerCase();
+            const step = row.querySelector('.step-cell').textContent.toLowerCase();
+            row.style.display = (name.includes(input) || email.includes(input) || step.includes(input)) ? "" : "none";
+        });
+    }
+</script>
+{% endblock %}
